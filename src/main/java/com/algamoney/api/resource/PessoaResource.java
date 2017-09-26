@@ -1,16 +1,16 @@
 package com.algamoney.api.resource;
 
+import com.algamoney.api.event.RecursoCriadoEvent;
 import com.algamoney.api.model.Pessoa;
 import com.algamoney.api.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
-import javax.xml.ws.Response;
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -20,11 +20,16 @@ public class PessoaResource {
     @Autowired
     private PessoaRepository pessoaRepository;
 
+    @Autowired
+    private ApplicationEventPublisher publisher;
+
     @PostMapping
-    private ResponseEntity<Pessoa> criar(@Valid @RequestBody Pessoa pessoa) {
+    private ResponseEntity<Pessoa> criar(@Valid @RequestBody Pessoa pessoa, HttpServletResponse response) {
         final Pessoa pessoaCriada = pessoaRepository.save(pessoa);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{codigo}").buildAndExpand(pessoaCriada.getCodigo()).toUri();
-        return ResponseEntity.created(uri).body(pessoaCriada);
+
+        publisher.publishEvent(new RecursoCriadoEvent(this, response, pessoaCriada.getCodigo()));
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(pessoaCriada);
     }
 
     @GetMapping
