@@ -56,6 +56,12 @@ public class PessoaResource {
         return ResponseEntity.status(HttpStatus.OK).body(pessoaService.atualizar(pessoa, codigo));
     }
 
+    @PutMapping("/{codigo}/ativo")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    private void atualizarPropriedadeAtivo(@PathVariable Long codigo, @RequestBody Boolean ativo){
+        pessoaService.atualizarPropriedadeAtivo(codigo, ativo);
+    }
+
     @DeleteMapping("/{codigo}")
     private ResponseEntity deletar(@PathVariable Long codigo){
         pessoaRepository.delete(codigo);
