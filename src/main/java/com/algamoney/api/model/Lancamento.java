@@ -1,6 +1,9 @@
 package com.algamoney.api.model;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -20,9 +23,11 @@ public class Lancamento {
     private String observacao;
     @Enumerated(EnumType.STRING)
     private TipoLancamento tipo;
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "codigo_categoria")
     private Categoria categoria;
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "codigo_pessoa")
     private Pessoa pessoa;
