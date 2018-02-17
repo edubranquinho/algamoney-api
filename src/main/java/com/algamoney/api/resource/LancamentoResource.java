@@ -58,6 +58,12 @@ public class LancamentoResource {
         return ResponseEntity.status(HttpStatus.CREATED).body(lancamentoSalvo);
     }
 
+    @DeleteMapping(value = "/{codigo}")
+    public ResponseEntity deletar(@PathVariable Long codigo) {
+        lancamentoRepository.delete(codigo);
+        return ResponseEntity.noContent().build();
+    }
+
     @ExceptionHandler({PessoaInexistenteOuInativaException.class})
     public ResponseEntity<Object> handlePessoaInexistenteOuInativaException(PessoaInexistenteOuInativaException ex) {
         String mensagemUsuario = messageSource.getMessage("pessoa.inexistente-ou-inativa", null, LocaleContextHolder.getLocale());
